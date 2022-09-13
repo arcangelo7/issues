@@ -15,6 +15,7 @@
 # SOFTWARE.
 
 
+from json import loads
 import argparse
 import csv
 import io
@@ -61,5 +62,5 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("-b", "--body", required=True, help="The body of an issue")
     args = vars(ap.parse_args())
-    print(f"This is a parsed issues body: {dict(args['body'])}")
+    print(f"This is a parsed issues body: {loads(args['body'])}")
 

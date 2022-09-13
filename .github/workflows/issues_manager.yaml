@@ -13,9 +13,4 @@ jobs:
       - uses: actions/setup-python@v4.2.0
         with:
           python-version: 3.10.7
-      - uses: jannekem/run-python-script-action@v1.2
-        with:
-          script: |
-            from issues_to_csv import boh
-            boh($GITHUB_CONTEXT)
-          
+      - run: issues_to_csv.py          

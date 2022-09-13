@@ -19,6 +19,7 @@ from json import loads
 import argparse
 import csv
 import io
+import os
 
 
 data = """
@@ -58,5 +59,5 @@ citations = split_data[1].strip()
 metadata_reader = csv.DictReader(io.StringIO(metadata))
 citations_reader = csv.DictReader(io.StringIO(citations))
 
-def boh(obj:dict):
-    print(obj)
+github_context = os.environ.get('GITHUB_CONTEXT')
+print(github_context)

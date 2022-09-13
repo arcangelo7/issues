@@ -61,5 +61,5 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("-b", "--body", required=True, help="The body of an issue")
     args = vars(ap.parse_args())
-    print(f"This is a parsed issues body: {args['body']}")
+    print(f"This is a parsed issues body: {dict(args['body'])}")
 

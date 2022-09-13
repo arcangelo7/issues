@@ -7,16 +7,11 @@ jobs:
   ValidateData:
     runs-on: ubuntu-latest
     steps:
-        - run: echo "$GITHUB_CONTEXT"
-          env:
-            GITHUB_CONTEXT: ${{ toJson(github) }}
-      # - uses: actions/checkout@v3.0.2
-      # - uses: actions/setup-python@v4.2.0
-      #   with:
-      #     python-version: 3.10.7
-      # - uses: jannekem/run-python-script-action@v1.2
-      #   with:
-      #     script: |
-      #       from json import loads
-      #       print(loads(${{ github }}))          
-          
+      - run: echo "$GITHUB_CONTEXT"
+      - uses: actions/checkout@v3.0.2
+      - uses: actions/setup-python@v4.2.0
+        with:
+          python-version: 3.10.7
+      - run: python3 -m from_issue_to_csv --body $GITHUB_CONTEXT
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}

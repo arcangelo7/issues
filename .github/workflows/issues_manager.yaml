@@ -4,14 +4,13 @@ on:
     types:
       - opened
 jobs:
-  Validate data:
+  ValidateData:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.0.2
       - uses: actions/setup-python@v4.2.0
         with:
           python-version: 3.10
-      - env:
-        - ISSUE: ${{ github.event }}
-      - run: |
-        python -m .github/workflows/from_issue_to_csv --body $ISSUE
+      - run: python -m .github/workflows/from_issue_to_csv --body $ISSUE
+        env:
+          ISSUE: ${{ github.event }}

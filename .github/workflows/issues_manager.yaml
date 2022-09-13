@@ -14,4 +14,4 @@ jobs:
       - env:
         - ISSUE: ${{ github.event }}
       - run: |
-        python -m .github/workflows/from_issue_to_csv --body ${{ ISSUE }}
+        python -m .github/workflows/from_issue_to_csv --body $ISSUE

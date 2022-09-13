@@ -58,9 +58,5 @@ citations = split_data[1].strip()
 metadata_reader = csv.DictReader(io.StringIO(metadata))
 citations_reader = csv.DictReader(io.StringIO(citations))
 
-if __name__ == "__main__":
-    ap = argparse.ArgumentParser()
-    ap.add_argument("-b", "--body", required=True, help="The body of an issue")
-    args = vars(ap.parse_args())
-    print(f"This is a parsed issues body: {loads(args['body'])}")
-
+def boh(obj:dict):
+    print(obj)

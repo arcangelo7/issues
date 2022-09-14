@@ -15,13 +15,12 @@
 # SOFTWARE.
 
 
-from json import loads
-import argparse
 import csv
 import io
+import json
 import os
 
-ISSUE_CONTEXT = os.environ.get("ISSUE_CONTEXT")
+ISSUE_CONTEXT = json.loads(os.environ.get("ISSUE_CONTEXT"))
 BODY = ISSUE_CONTEXT["body"]
 TITLE = ISSUE_CONTEXT["title"]
 CREATED_AT = ISSUE_CONTEXT["created_at"]

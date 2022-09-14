@@ -7,7 +7,7 @@ jobs:
   ValidateData:
     runs-on: ubuntu-latest
     env:
-      GITHUB_CONTEXT: ${{ toJson(github) }}
+      ISSUE_CONTEXT: ${{ toJson(github.event.issue) }}
     steps:
       - uses: actions/checkout@v3.0.2
       - uses: actions/setup-python@v4.2.0

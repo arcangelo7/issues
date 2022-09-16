@@ -85,6 +85,7 @@ if __name__ == "__main__":
         "--json", "title,body,number,author,createdAt"], 
         capture_output=True, text=True)
     issues = json.loads(output.stdout)
-    for issue in issues:
-        is_valid, message = validate(issue["title"], issue["body"])
-        answer(is_valid, message, issue["number"])
+    print(issues)
+    # for issue in issues:
+    #     is_valid, message = validate(issue["title"], issue["body"])
+    #     answer(is_valid, message, issue["number"])

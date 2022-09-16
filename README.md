@@ -46,11 +46,11 @@ The body consists of the metadata of the article and the citations in CSV. The t
 ```
 **issue:label**
 
-The label 'Deposit' must be added to the issue. 
+The label 'deposit' must be added to the issue. 
 
 **next steps**
 
-OpenCitations will then injest the deposits once a week and mark the issues as 'Done'. The deposits could also be rejected by marking the issues as 'Rejected'.
+OpenCitations will then injest the deposits once a week and mark the issues as 'done'. The deposits could also be rejected by marking the issues as 'rejected'.
 
 **history and provenance**
 

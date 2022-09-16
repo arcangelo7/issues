@@ -26,23 +26,6 @@ import re
 import subprocess
 
 
-if isinstance(os.environ.get("ISSUE_CONTEXT"), dict):
-    ISSUE_CONTEXT = json.loads(os.environ.get("ISSUE_CONTEXT"))
-    BODY:str = ISSUE_CONTEXT["body"]
-    TITLE = ISSUE_CONTEXT["title"]
-    ISSUE_NUMBER = ISSUE_CONTEXT["number"]
-    CREATED_AT = ISSUE_CONTEXT["created_at"]
-    USER_ID = ISSUE_CONTEXT["user"]["id"]
-    TOKEN = os.environ.get("GITHUB_TOKEN")
-else:
-    ISSUE_CONTEXT = dict()
-    BODY = str()
-    TITLE = str()
-    ISSUE_NUMBER = str()
-    CREATED_AT = str()
-    USER_ID = int()
-    TOKEN = str()
-
 def __validate_title(title:str) -> Tuple[bool, str]:
     match = re.search(r"deposit\s+(.+?)(?:(doi|issn|isbn|pmid|pmcid|url|wikidata|wikipedia):(.+))", title)
     if not match:
@@ -58,7 +41,7 @@ def __validate_title(title:str) -> Tuple[bool, str]:
         return False, f"The identifier with literal value {identifier} specified in the issue title is not a valid {identifier_schema.upper()}"
     return True, ""
 
-def validate(issue_title:str=TITLE, issue_body:str=BODY) -> Tuple[bool, str]:
+def validate(issue_title:str, issue_body:str) -> Tuple[bool, str]:
     is_valid_title, title_message = __validate_title(issue_title)
     if not is_valid_title:
         return False, title_message
@@ -72,32 +55,40 @@ def validate(issue_title:str=TITLE, issue_body:str=BODY) -> Tuple[bool, str]:
     except Exception as e:
         return False, "The data you provided could not be processed as a CSV. Please, check that the metadata CSV and the citation CSV are valid CSVs"
 
-def answer(is_valid:bool, message:str) -> None:
+def answer(is_valid:bool, message:str, issue_number:int, token:str) -> None:
     if is_valid:
         label = "Done"
     else:
         label = "Rejected"
-    subprocess.run(["gh", "auth", "login", "--with-token", TOKEN])
-    subprocess.run(["gh", "issue", "edit", ISSUE_NUMBER, "--add-label", label])
-    subprocess.run(["gh", "issue", "close", ISSUE_NUMBER, "--comment", message])
+    subprocess.run(["gh", "auth", "login", "--with-token", token])
+    subprocess.run(["gh", "issue", "edit", issue_number, "--add-label", label])
+    subprocess.run(["gh", "issue", "close", issue_number, "--comment", message])
 
-def store():
-    split_data = BODY.split("===###===@@@===")
+def store(issue_title:str, issue_body:str, created_at:str, user_id:int):
+    split_data = issue_body.split("===###===@@@===")
     metadata = list(csv.DictReader(io.StringIO(split_data[0].strip())))
     citations = list(csv.DictReader(io.StringIO(split_data[1].strip())))
     new_object = {
         'data': {
-            'title': TITLE,
+            'title': issue_title,
             'metadata': metadata,
             'citations': citations
         },
         'provenance': {
-            'generatedAtTime': CREATED_AT,
-            'wasAttributedTo': USER_ID
+            'generatedAtTime': created_at,
+            'wasAttributedTo': user_id
         }
     }
 
-if __name__ == '__main':
-    is_valid, message = validate()
-    answer(is_valid, message)
-    store()
+
+if __name__ == "__main__":
+    ISSUE_CONTEXT = json.loads(os.environ.get("ISSUE_CONTEXT"))
+    BODY:str = ISSUE_CONTEXT["body"]
+    TITLE = ISSUE_CONTEXT["title"]
+    ISSUE_NUMBER = ISSUE_CONTEXT["number"]
+    CREATED_AT = ISSUE_CONTEXT["created_at"]
+    USER_ID = ISSUE_CONTEXT["user"]["id"]
+    TOKEN = os.environ.get("GITHUB_TOKEN")
+
+    is_valid, message = validate(TITLE, BODY)
+    answer(is_valid, message, ISSUE_NUMBER, TOKEN)

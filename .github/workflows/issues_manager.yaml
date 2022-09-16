@@ -1,13 +1,12 @@
 name: Issues manager
 on: 
   schedule:
-    - cron: '* * * * *'
+    - cron: '1 * * * *'
 jobs:
   Validate:
     runs-on: ubuntu-latest
     env:
       ISSUE_CONTEXT: ${{ toJson(github.event.issue) }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: List files in the repository
         uses: actions/checkout@v3.0.2

@@ -50,7 +50,7 @@ def validate(issue_title:str, issue_body:str) -> Tuple[bool, str]:
         read_csv(io.StringIO(split_data[0].strip()))
         read_csv(io.StringIO(split_data[1].strip()))
         return True, "Thank you for your contribution! OpenCitations will process the data you provided within a week. Afterwards, citations will be available on the [CROCI](https://opencitations.net/index/croci) index and metadata on OpenCitations Meta"
-    except Exception as e:
+    except Exception:
         return False, "The data you provided could not be processed as a CSV. Please, check that the metadata CSV and the citation CSV are valid CSVs"
 
 def answer(is_valid:bool, message:str, issue_number:str) -> None:

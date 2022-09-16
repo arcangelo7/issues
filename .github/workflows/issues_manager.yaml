@@ -1,7 +1,5 @@
 name: Issues manager
-on: 
-  schedule:
-    - cron: '*/5 * * * *'
+on: workflow_dispatch
 jobs:
   Validate:
     runs-on: ubuntu-latest

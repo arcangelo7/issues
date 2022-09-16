@@ -1,8 +1,7 @@
 name: Issues manager
 on: 
-  issues:
-    types:
-      - opened
+  schedule:
+    - cron: '* * * * *'
 jobs:
   Validate:
     runs-on: ubuntu-latest
@@ -18,5 +17,5 @@ jobs:
           python-version: 3.10.7
       - name: Install the dependencies
         run: pip3 install -r requirements.txt
-      - name: Process the issues
+      - name: Process the issue
         run: python3 process_issues.py

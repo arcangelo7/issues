@@ -19,9 +19,7 @@ from pandas import read_csv
 from typing import Tuple
 import csv
 import io
-import json
 import oc_idmanager
-import os
 import re
 import subprocess
 
@@ -77,16 +75,11 @@ def store(issue_title:str, issue_body:str, created_at:str, user_id:int):
             'generatedAtTime': created_at,
             'wasAttributedTo': user_id
         }
-    }
+    }    
 
 
 if __name__ == "__main__":
-    ISSUE_CONTEXT = json.loads(os.environ.get("ISSUE_CONTEXT"))
-    BODY = ISSUE_CONTEXT["body"]
-    TITLE = ISSUE_CONTEXT["title"]
-    ISSUE_NUMBER = str(ISSUE_CONTEXT["number"])
-    CREATED_AT = ISSUE_CONTEXT["created_at"]
-    USER_ID = str(ISSUE_CONTEXT["user"]["id"])
-
-    is_valid, message = validate(TITLE, BODY)
-    answer(is_valid, message, ISSUE_NUMBER)
+    issues = subprocess.run(["gh", "issue", "list", "--state", "open", "--label", "deposit", "--json", "title,body,number,author,created_at"])
+    for issue in issues:
+        is_valid, message = validate(issue["title"], issue["body"])
+        answer(is_valid, message, issue["number"])

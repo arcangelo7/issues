@@ -55,7 +55,7 @@ def validate(issue_title:str, issue_body:str) -> Tuple[bool, str]:
     except Exception as e:
         return False, "The data you provided could not be processed as a CSV. Please, check that the metadata CSV and the citation CSV are valid CSVs"
 
-def answer(is_valid:bool, message:str, issue_number:int) -> None:
+def answer(is_valid:bool, message:str, issue_number:str) -> None:
     if is_valid:
         label = "done"
     else:
@@ -82,11 +82,11 @@ def store(issue_title:str, issue_body:str, created_at:str, user_id:int):
 
 if __name__ == "__main__":
     ISSUE_CONTEXT = json.loads(os.environ.get("ISSUE_CONTEXT"))
-    BODY:str = ISSUE_CONTEXT["body"]
+    BODY = ISSUE_CONTEXT["body"]
     TITLE = ISSUE_CONTEXT["title"]
-    ISSUE_NUMBER = ISSUE_CONTEXT["number"]
+    ISSUE_NUMBER = str(ISSUE_CONTEXT["number"])
     CREATED_AT = ISSUE_CONTEXT["created_at"]
-    USER_ID = ISSUE_CONTEXT["user"]["id"]
+    USER_ID = str(ISSUE_CONTEXT["user"]["id"])
 
     is_valid, message = validate(TITLE, BODY)
     answer(is_valid, message, ISSUE_NUMBER)

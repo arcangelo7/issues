@@ -81,7 +81,7 @@ def store(issue_title:str, issue_body:str, created_at:str, user_id:int):
 
 if __name__ == "__main__":
     output = subprocess.run(["gh", "issue", "list", "--state", "open", "--label", "deposit", "--json", "title,body,number,author,created_at"], capture_output=True, text=True)
-    issues = json.loads(output.stdout)
-    for issue in issues:
-        is_valid, message = validate(issue["title"], issue["body"])
-        answer(is_valid, message, issue["number"])
+    print(output)
+    # for issue in issues:
+    #     is_valid, message = validate(issue["title"], issue["body"])
+    #     answer(is_valid, message, issue["number"])

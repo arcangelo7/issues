@@ -14,7 +14,7 @@
 # ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 # SOFTWARE.
 
-
+from cryptography.fernet import Fernet
 import os
 import sched
 import subprocess
@@ -22,14 +22,17 @@ import time
 
 
 def trigger_issues_manager_workflow(sc:sched.scheduler): 
-    subprocess.run(["gh", "workflow", "issues_manager.yaml"])
-    sc.enter(300, 1, trigger_issues_manager_workflow, (sc,))
+    subprocess.run(["gh", "workflow", "run", "issues_manager.yaml"])
+    sc.enter(5, 1, trigger_issues_manager_workflow, (sc,))
 
 
 if __name__ == "__main__":
-    os.environ["GH_TOKEN"] = "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"
+    key = input("Insert decryption key: ")
+    ecrypted_token = "gAAAAABjJMhSFw3I89ti0N1B8nI_-ULl8fROzbRtxWJsjRRta3WzDa8UNC1Z682hL2mjUgZpP43pt-NBzmzcMwJVITBdQEtAgyE7Q_mIoxGDpnJgl1JmfnNCNTt5CyWKF5ygzyzGoRog"
+    token = Fernet(key).decrypt(ecrypted_token).decode()
+    os.environ["GH_TOKEN"] = token
     s = sched.scheduler(time.time, time.sleep)
-    s.enter(300, 1, trigger_issues_manager_workflow, (s,))
+    s.enter(5, 1, trigger_issues_manager_workflow, (s,))
     s.run()
 
 

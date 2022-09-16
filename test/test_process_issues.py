@@ -1,20 +1,25 @@
-# Crowdsourcing
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright (c) 2022, Arcangelo Massari <arcangelo.massari@unibo.it>
+#
+# Permission to use, copy, modify, and/or distribute this software for any purpose
+# with or without fee is hereby granted, provided that the above copyright notice
+# and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+# REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+# FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT,
+# OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE,
+# DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
+# ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+# SOFTWARE.
 
-In this repository, trusted agents can deposit citations and bibliographic metadata for publication through the OpenCitations CROCI and OpenCitations Meta indexes.
 
-To make a deposit, open an issue to this repository following the format that will be described below.
+from process_issues import *
+import unittest
 
-An example can be found at: https://github.com/GaziYucel/open_citations_croci_depot/issues/15
 
-**issue:title**
-
-The title of the issue must be in the following format: "deposit {domain name of journal} {doi or other identifier}". For example "deposit localhost:330 doi:10.1007/978-3-030-00668-6_8". The following identifiers are currently supported: doi, issn, isbn, pmid, pmcid, url, wikidata, and wikipedia.
-
-**issue:body**
-
-The body consists of the metadata of the article and the citations in CSV. The two CSVs must be separated by "===###===@@@===". See example below.
-
-```
+VALID_BODY = """
 "id","title","author","pub_date","venue","volume","issue","page","type","publisher","editor"
 "doi:10.1007/978-3-662-07918-8_3","Influence of Dielectric Properties, State, and Electrodes on Electric Strength","Ushakov, Vasily Y.","2004","Insulation of High-Voltage Equipment [isbn:9783642058530 isbn:9783662079188]","","","27-82","book chapter","Springer Science and Business Media LLC [crossref:297]",""
 "doi:10.1016/0021-9991(73)90147-2","Flux-corrected transport. I. SHASTA, a fluid transport algorithm that works","Boris, Jay P; Book, David L","1973-1","Journal of Computational Physics [issn:0021-9991]","11","1","38-69","journal article","Elsevier BV [crossref:78]",""
@@ -43,15 +48,52 @@ The body consists of the metadata of the article and the citations in CSV. The t
 "doi:10.1007/s42835-022-01029-y","2022-02-28","doi:10.1088/0022-3727/39/14/017",""
 "doi:10.1007/s42835-022-01029-y","2022-02-28","doi:10.1007/978-3-663-14090-0","1985"
 "doi:10.1007/s42835-022-01029-y","2022-02-28","doi:10.1016/0021-9991(82)90026-2",""
-```
-**issue:label**
+"""
 
-The label 'Deposit' must be added to the issue. 
 
-**next steps**
+class Test_process_issues(unittest.TestCase):
+    def test_valid_title_and_body(self):
+        issue_title = "deposit localhost:330 doi:10.1007/s42835-022-01029-y"
+        issue_body = VALID_BODY
+        is_valid, message = validate(issue_title, issue_body)
+        expected_message = 'Thank you for your contribution! OpenCitations will process the data you provided within a week. Afterwards, citations will be available through the [CROCI](https://opencitations.net/index/croci) index and metadata through OpenCitations Meta'
+        self.assertEqual((is_valid, message), (True, expected_message))
 
-OpenCitations will then injest the deposits once a week and mark the issues as 'Done'. The deposits could also be rejected by marking the issues as 'Rejected'.
+    def test_title_no_supported_schema(self):
+        issue_title = "deposit localhost:330 pippo:10.1007/s42835-022-01029-y"
+        issue_body = VALID_BODY
+        is_valid, message = validate(issue_title, issue_body)
+        expected_message = 'The title of the issue was not structured correctly. Please, follow this format: deposit {domain name of journal} {doi or other supported identifier}. For example "deposit localhost:330 doi:10.1007/978-3-030-00668-6_8". The following identifiers are currently supported: doi, issn, isbn, pmid, pmcid, url, wikidata, and wikipedia'
+        self.assertEqual((is_valid, message), (False, expected_message))
 
-**history and provenance**
+    def test_title_no_deposit_keyword(self):
+        issue_title = "deposits localhost:330 doi:10.1007/s42835-022-01029-y"
+        issue_body = VALID_BODY
+        is_valid, message = validate(issue_title, issue_body)
+        expected_message = 'The title of the issue was not structured correctly. Please, follow this format: deposit {domain name of journal} {doi or other supported identifier}. For example "deposit localhost:330 doi:10.1007/978-3-030-00668-6_8". The following identifiers are currently supported: doi, issn, isbn, pmid, pmcid, url, wikidata, and wikipedia'
+        self.assertEqual((is_valid, message), (False, expected_message))
 
-Once a week, valid deposits will be uploaded to Zenodo and ingested by CROCI and OpenCitations Meta. The provenance of citation data and metadata will then reference the DOI of the repository on Zenodo, so that a lasting record of the agents responsible for each deposit is preserved.
+    def test_title_invalid_id(self):
+        issue_title = "deposit localhost:330 doi:10.1007/s42835-022-01029-y."
+        issue_body = VALID_BODY
+        is_valid, message = validate(issue_title, issue_body)
+        expected_message = "The identifier with literal value 10.1007/s42835-022-01029-y. specified in the issue title is not a valid DOI"
+        self.assertEqual((is_valid, message), (False, expected_message))
+    
+    def test_body_no_sep(self):
+        issue_title = "deposit localhost:330 doi:10.1007/s42835-022-01029-y"
+        issue_body = VALID_BODY.replace("===###===@@@===", "")
+        is_valid, message = validate(issue_title, issue_body)
+        expected_message = 'Please use the separator "===###===@@@===" to divide metadata from citations, as shown in the following guide: https://github.com/arcangelo7/issues/blob/main/README.md'
+        self.assertEqual((is_valid, message), (False, expected_message))
+
+    def test_body_invalid_csv(self):
+        issue_title = "deposit localhost:330 doi:10.1007/s42835-022-01029-y"
+        issue_body = VALID_BODY + ",,,,,"
+        is_valid, message = validate(issue_title, issue_body)
+        expected_message = 'The data you provided could not be processed as a CSV. Please, check that the metadata CSV and the citation CSV are valid CSVs'
+        self.assertEqual((is_valid, message), (False, expected_message))
+
+
+if __name__ == '__main__':
+    unittest.main()

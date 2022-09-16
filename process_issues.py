@@ -55,12 +55,11 @@ def validate(issue_title:str, issue_body:str) -> Tuple[bool, str]:
     except Exception as e:
         return False, "The data you provided could not be processed as a CSV. Please, check that the metadata CSV and the citation CSV are valid CSVs"
 
-def answer(is_valid:bool, message:str, issue_number:int, token:str) -> None:
+def answer(is_valid:bool, message:str, issue_number:int) -> None:
     if is_valid:
         label = "Done"
     else:
         label = "Rejected"
-    subprocess.run(["gh", "auth", "login", "--with-token", token])
     subprocess.run(["gh", "issue", "edit", issue_number, "--add-label", label])
     subprocess.run(["gh", "issue", "close", issue_number, "--comment", message])
 
@@ -88,7 +87,6 @@ if __name__ == "__main__":
     ISSUE_NUMBER = ISSUE_CONTEXT["number"]
     CREATED_AT = ISSUE_CONTEXT["created_at"]
     USER_ID = ISSUE_CONTEXT["user"]["id"]
-    TOKEN = os.environ.get("GITHUB_TOKEN")
 
     is_valid, message = validate(TITLE, BODY)
-    answer(is_valid, message, ISSUE_NUMBER, TOKEN)
+    answer(is_valid, message, ISSUE_NUMBER)

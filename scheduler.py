@@ -15,6 +15,7 @@
 # SOFTWARE.
 
 from cryptography.fernet import Fernet
+from getpass import getpass
 import os
 import sched
 import subprocess
@@ -27,7 +28,7 @@ def trigger_issues_manager_workflow(sc:sched.scheduler):
 
 
 if __name__ == "__main__":
-    key = input("Insert decryption key: ")
+    key = getpass("Insert decryption key: ")
     ecrypted_token = "gAAAAABjJMhSFw3I89ti0N1B8nI_-ULl8fROzbRtxWJsjRRta3WzDa8UNC1Z682hL2mjUgZpP43pt-NBzmzcMwJVITBdQEtAgyE7Q_mIoxGDpnJgl1JmfnNCNTt5CyWKF5ygzyzGoRog"
     token = Fernet(key).decrypt(ecrypted_token).decode()
     os.environ["GH_TOKEN"] = token

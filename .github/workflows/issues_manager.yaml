@@ -1,7 +1,7 @@
 name: Issues manager
 on: 
   schedule:
-    - cron: '1 * * * *'
+    - cron: '5 * * * *'
 jobs:
   Validate:
     runs-on: ubuntu-latest

@@ -1,7 +1,7 @@
 name: OC Meta runner
 on: workflow_dispatch
 jobs:
-  Run OC Meta:
+  RunOCMeta:
     runs-on: self-hosted
     steps:
       - run: ls

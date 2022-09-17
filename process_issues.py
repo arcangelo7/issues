@@ -75,6 +75,7 @@ def __get_user_id(username:str) -> str:
             if r.status_code == 200:
                 r.encoding = "utf-8"
                 json_res = json.loads(r.text)
+                print(username, json_res)
                 return json_res.get("id")
         except requests.ReadTimeout:
             # Do nothing, just try again

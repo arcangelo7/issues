@@ -107,7 +107,7 @@ def __create_deposition_resource(today:str) -> Tuple[str, str]:
             "publication_date": today,
             "title": f"OpenCitations crowdsourcing: deposits of the week before {today}",
             "creators": [{"name": "Massari, Arcangelo", "affiliation": "Research Centre for Open Scholarly Metadata, Department of Classical Philology and Italian Studies, University of Bologna, Bologna, Italy", "orcid": "0000-0002-8420-0696"}],
-            "description": f"OpenCitations collects citation data and related metadata from the community through issues on the GitHub repository https://github.com/opencitations/crowdsourcing. In order to preserve long-term provenance information, such data is uploaded to Zenodo every week. This upload contains the data of deposit issues published in the week before {today}.",
+            "description": f"OpenCitations collects citation data and related metadata from the community through issues on the GitHub repository <a href='https://github.com/opencitations/crowdsourcing'>https://github.com/opencitations/crowdsourcing</a>. In order to preserve long-term provenance information, such data is uploaded to Zenodo every week. This upload contains the data of deposit issues published in the week before {today}.",
             "access_right": "open",
             "license": "CC0-1.0",
             "prereserve_doi": True,
@@ -133,9 +133,8 @@ def deposit_on_zenodo(data_to_store:List[dict]) -> None:
     today = datetime.now().strftime("%Y-%m-%d")
     deposition_id, bucket = __create_deposition_resource(today)
     __upload_data(today, bucket)
-    r = requests.post('https://zenodo.org/api/deposit/depositions/%s/actions/publish' % deposition_id,
-                        params={'access_token': os.environ["ZENODO"]} )
-    print(r.json())
+    # r = requests.post('https://zenodo.org/api/deposit/depositions/%s/actions/publish' % deposition_id,
+    #                     params={'access_token': os.environ["ZENODO"]} )
 
 def is_in_whitelist(username:int) -> bool:
     with open("whitelist.txt", "r") as f:

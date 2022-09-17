@@ -102,7 +102,7 @@ def get_data_to_store(issue_title:str, issue_body:str, created_at:str, username:
 
 def __create_deposition_resource(today:str) -> str:
     r = requests.post("https://zenodo.org/api/deposit/depositions",
-        params={"access_token": os.environ["TOKENS"]["ZENODO"]},
+        params={"access_token": os.environ["GITHUB_TOKEN"]["ZENODO"]},
         json={"metadata": {
             "upload_type": "dataset",
             "publication_date": today,
@@ -125,7 +125,7 @@ def __upload_data(today:str, bucket:str) -> None:
         r = requests.put(
             "%s/%s" % (bucket, f"{today}_weekly_deposit"),
             data=fp,
-            params={"access_token": os.environ["TOKENS"]["ZENODO"]}
+            params={"access_token": os.environ["GITHUB_TOKEN"]["ZENODO"]}
         )
     r.json()
 
@@ -145,9 +145,9 @@ if __name__ == "__main__":
         ["gh", "issue", "list", "--state", "open", "--label", "deposit", 
         "--json", "title,body,number,author,createdAt"], 
         capture_output=True, text=True)
-    print(output)
     issues = json.loads(output.stdout)
     data_to_store = list()
+    print(os.environ)
     for issue in issues:
         issue_title = issue["title"]
         issue_body = issue["body"]

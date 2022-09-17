@@ -100,7 +100,7 @@ def get_data_to_store(issue_title:str, issue_body:str, created_at:str, username:
         }
     }
 
-def __create_deposition_resource(today:str) -> str:
+def __create_deposition_resource(today:str) -> Tuple[str, str]:
     r = requests.post("https://zenodo.org/api/deposit/depositions",
         params={"access_token": os.environ["ZENODO"]},
         json={"metadata": {
@@ -117,7 +117,7 @@ def __create_deposition_resource(today:str) -> str:
             "version": "1.0.0"
         }},
         headers={"Content-Type": "application/json"})
-    return r.json()["links"]["bucket"]
+    return r.json()["id"], r.json()["links"]["bucket"]
 
 def __upload_data(today:str, bucket:str) -> None:
     with open("data_to_store.json", "rb") as fp:
@@ -132,11 +132,11 @@ def deposit_on_zenodo(data_to_store:List[dict]) -> None:
     with open('data_to_store.json', 'w') as outfile:
         json.dump(data_to_store, outfile)
     today = datetime.now().strftime("%Y-%m-%d")
-    bucket = __create_deposition_resource(today)
+    deposition_id, bucket = __create_deposition_resource(today)
     __upload_data(today, bucket)
-    # r = requests.post('https://zenodo.org/api/deposit/depositions/%s/actions/publish' % deposition_id,
-    #                     params={'access_token': ACCESS_TOKEN} )
-    # print(r.json())
+    r = requests.post('https://zenodo.org/api/deposit/depositions/%s/actions/publish' % deposition_id,
+                        params={'access_token': os.environ["ZENODO"]} )
+    print(r.json())
 
 def is_in_whitelist(username:int) -> bool:
     with open("whitelist.txt", "r") as f:

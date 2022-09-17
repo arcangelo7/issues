@@ -4,5 +4,7 @@ jobs:
   RunOCMeta:
     runs-on: self-hosted
     steps:
-      - run: ls
+      - run: |
+          cd ../
+          ls -la
 

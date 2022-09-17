@@ -4,7 +4,6 @@ jobs:
   Validate:
     runs-on: ubuntu-latest
     env:
-      ISSUE_CONTEXT: ${{ toJson(github.event.issue) }}
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
       ZENODO: ${{ secrets.ZENODO }}
     steps:

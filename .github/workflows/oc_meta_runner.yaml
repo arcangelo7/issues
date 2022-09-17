@@ -3,6 +3,8 @@ on: workflow_dispatch
 jobs:
   RunOCMeta:
     runs-on: self-hosted
+    env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
       - name: Run OC Meta
         run: python meta_runner.py

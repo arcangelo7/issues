@@ -60,7 +60,7 @@ def validate(issue_title:str, issue_body:str) -> Tuple[bool, str]:
 
 def answer(is_valid:bool, message:str, issue_number:str) -> None:
     if is_valid:
-        label = "done"
+        label = "to be processed"
     else:
         label = "rejected"
     subprocess.run(["gh", "issue", "edit", issue_number, "--add-label", label])

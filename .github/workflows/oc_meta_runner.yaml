@@ -5,5 +5,5 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Run OC Meta
-        run: meta_runner.py
+        run: python meta_runner.py
 

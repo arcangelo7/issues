@@ -145,6 +145,7 @@ if __name__ == "__main__":
         ["gh", "issue", "list", "--state", "open", "--label", "deposit", 
         "--json", "title,body,number,author,createdAt"], 
         capture_output=True, text=True)
+    print(output)
     issues = json.loads(output.stdout)
     data_to_store = list()
     for issue in issues:

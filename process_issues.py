@@ -117,17 +117,16 @@ def __create_deposition_resource(today:str) -> str:
             "version": "1.0.0"
         }},
         headers={"Content-Type": "application/json"})
-    print(r.json())
     return r.json()["links"]["bucket"]
 
 def __upload_data(today:str, bucket:str) -> None:
     with open("data_to_store.json", "rb") as fp:
         r = requests.put(
-            "%s/%s" % (bucket, f"{today}_weekly_deposit"),
+            "%s/%s" % (bucket, f"{today}_weekly_deposit.json"),
             data=fp,
             params={"access_token": os.environ["ZENODO"]}
         )
-    r.json()
+    print(r.json())
 
 def deposit_on_zenodo(data_to_store:List[dict]) -> None:
     with open('data_to_store.json', 'w') as outfile:

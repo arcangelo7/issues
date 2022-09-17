@@ -2,6 +2,8 @@
 
 In this repository, trusted agents can deposit citations and bibliographic metadata for publication through the OpenCitations CROCI and OpenCitations Meta indexes.
 
+## How to make a deposit
+
 To make a deposit, open an issue to this repository following the format that will be described below.
 
 An example can be found at: https://github.com/GaziYucel/open_citations_croci_depot/issues/15
@@ -44,14 +46,11 @@ The body consists of the metadata of the article and the citations in CSV. The t
 "doi:10.1007/s42835-022-01029-y","2022-02-28","doi:10.1007/978-3-663-14090-0","1985"
 "doi:10.1007/s42835-022-01029-y","2022-02-28","doi:10.1016/0021-9991(82)90026-2",""
 ```
-**issue:label**
 
-The label 'deposit' must be added to the issue. 
-
-**next steps**
+## Next steps
 
 OpenCitations will then injest the deposits once a week and mark the issues as 'done'. The deposits could also be rejected by marking the issues as 'rejected'.
 
-**history and provenance**
+## History and provenance
 
 Once a week, valid deposits will be uploaded to Zenodo and ingested by CROCI and OpenCitations Meta. The provenance of citation data and metadata will then reference the DOI of the repository on Zenodo, so that a lasting record of the agents responsible for each deposit is preserved.

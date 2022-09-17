@@ -107,6 +107,19 @@ class Test_process_issues(unittest.TestCase):
                 'citations': [{'citing_id': 'doi:10.1007/s42835-022-01029-y', 'citing_publication_date': '2022-02-28', 'cited_id': 'doi:10.1007/978-3-662-07918-8_3', 'cited_publication_date': '2004'}, {'citing_id': 'doi:10.1007/s42835-022-01029-y', 'citing_publication_date': '2022-02-28', 'cited_id': 'doi:10.1016/0021-9991(73)90147-2', 'cited_publication_date': '1973-1'}, {'citing_id': 'doi:10.1007/s42835-022-01029-y', 'citing_publication_date': '2022-02-28', 'cited_id': 'doi:10.1109/20.877674', 'cited_publication_date': '2000-7'}, {'citing_id': 'doi:10.1007/s42835-022-01029-y', 'citing_publication_date': '2022-02-28', 'cited_id': 'doi:10.1109/tps.2003.815469', 'cited_publication_date': ''}, {'citing_id': 'doi:10.1007/s42835-022-01029-y', 'citing_publication_date': '2022-02-28', 'cited_id': 'doi:10.1109/tpwrd.2011.2172694', 'cited_publication_date': '2012-1'}, {'citing_id': 'doi:10.1007/s42835-022-01029-y', 'citing_publication_date': '2022-02-28', 'cited_id': 'doi:10.1007/978-1-4615-3786-1_11', 'cited_publication_date': '1990'}, {'citing_id': 'doi:10.1007/s42835-022-01029-y', 'citing_publication_date': '2022-02-28', 'cited_id': 'doi:10.1088/0022-3727/13/1/002', 'cited_publication_date': '1980-1-14'}, {'citing_id': 'doi:10.1007/s42835-022-01029-y', 'citing_publication_date': '2022-02-28', 'cited_id': 'doi:10.1109/27.106800', 'cited_publication_date': '1991-4'}, {'citing_id': 'doi:10.1007/s42835-022-01029-y', 'citing_publication_date': '2022-02-28', 'cited_id': 'doi:10.1016/0021-9991(79)90051-2', 'cited_publication_date': '1979-6'}, {'citing_id': 'doi:10.1007/s42835-022-01029-y', 'citing_publication_date': '2022-02-28', 'cited_id': 'doi:10.1088/0022-3727/39/14/017', 'cited_publication_date': ''}, {'citing_id': 'doi:10.1007/s42835-022-01029-y', 'citing_publication_date': '2022-02-28', 'cited_id': 'doi:10.1007/978-3-663-14090-0', 'cited_publication_date': '1985'}, {'citing_id': 'doi:10.1007/s42835-022-01029-y', 'citing_publication_date': '2022-02-28', 'cited_id': 'doi:10.1016/0021-9991(82)90026-2', 'cited_publication_date': ''}]}, 
             'provenance': {'generatedAtTime': '2022-09-16T22:34:30Z', 'wasAttributedTo': 42008604}}
         self.assertEqual(output, expected_output)
+    
+    def test_get_user_id(self):
+        user_id = get_user_id("essepuntato")
+        self.assertEqual(user_id, 3869247)
+    
+    def test_is_in_whitelist(self):
+        output = is_in_whitelist(3869247)
+        self.assertEqual(output, True)
+
+    def test_is_not_in_whitelist(self):
+        output = is_in_whitelist(3869248)
+        self.assertEqual(output, False)
+
 
 if __name__ == '__main__':
     unittest.main()

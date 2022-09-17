@@ -66,7 +66,7 @@ def answer(is_valid:bool, message:str, issue_number:str) -> None:
     subprocess.run(["gh", "issue", "edit", issue_number, "--add-label", label])
     subprocess.run(["gh", "issue", "close", issue_number, "--comment", message])
 
-def __get_user_id(username:str) -> str:
+def get_user_id(username:str) -> str:
     tentative = 3
     while tentative:
         tentative -= 1
@@ -75,7 +75,6 @@ def __get_user_id(username:str) -> str:
             if r.status_code == 200:
                 r.encoding = "utf-8"
                 json_res = json.loads(r.text)
-                print(username, json_res)
                 return json_res.get("id")
         except requests.ReadTimeout:
             # Do nothing, just try again
@@ -88,7 +87,7 @@ def get_data_to_store(issue_title:str, issue_body:str, created_at:str, username:
     split_data = issue_body.split("===###===@@@===")
     metadata = list(csv.DictReader(io.StringIO(split_data[0].strip())))
     citations = list(csv.DictReader(io.StringIO(split_data[1].strip())))
-    user_id = __get_user_id(username)        
+    user_id = get_user_id(username)        
     return {
         "data": {
             "title": issue_title,
@@ -139,6 +138,13 @@ def deposit_on_zenodo(data_to_store:List[dict]) -> None:
     #                     params={'access_token': ACCESS_TOKEN} )
     # print(r.json())
 
+def is_in_whitelist(username:int) -> bool:
+    with open("whitelist.txt", "r") as f:
+        whitelist = f.read().splitlines()
+        if str(username) not in whitelist:
+            return False
+    return True
+
 
 if __name__ == "__main__":
     output = subprocess.run(
@@ -148,11 +154,13 @@ if __name__ == "__main__":
     issues = json.loads(output.stdout)
     data_to_store = list()
     for issue in issues:
+        issue_number = str(issue["number"])
+        username = issue["author"]["login"]
+        if not is_in_whitelist(username):
+            answer = (False, "To make a deposit, please contact OpenCitations at <contact@opencitations.net> to register as a trusted user", issue_number)
         issue_title = issue["title"]
         issue_body = issue["body"]
-        issue_number = str(issue["number"])
         created_at = issue["createdAt"]
-        username = issue["author"]
         is_valid, message = validate(issue_title, issue_body)
         answer(is_valid, message, issue_number)
         data_to_store.append(get_data_to_store(issue_title, issue_body, created_at, username))

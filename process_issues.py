@@ -157,7 +157,7 @@ if __name__ == "__main__":
         issue_number = str(issue["number"])
         username = issue["author"]["login"]
         if not is_in_whitelist(username):
-            answer = (False, "To make a deposit, please contact OpenCitations at <contact@opencitations.net> to register as a trusted user", issue_number)
+            answer(False, "To make a deposit, please contact OpenCitations at <contact@opencitations.net> to register as a trusted user", issue_number)
         issue_title = issue["title"]
         issue_body = issue["body"]
         created_at = issue["createdAt"]

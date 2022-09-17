@@ -4,8 +4,6 @@ jobs:
   RunOCMeta:
     runs-on: self-hosted
     steps:
-      - name: List files in the repository
-        uses: actions/checkout@v3.0.2
       - name: Run OC Meta
         run: meta_runner.py
 

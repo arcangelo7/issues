@@ -5,7 +5,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ISSUE_CONTEXT: ${{ toJson(github.event.issue) }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      ZENODO: ${{ secrets.ZENODO }}
     steps:
       - name: List files in the repository
         uses: actions/checkout@v3.0.2

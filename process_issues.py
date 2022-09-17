@@ -83,11 +83,10 @@ def get_user_id(username:str) -> str:
             # Sleep 5 seconds, then try again
             time.sleep(5)
 
-def get_data_to_store(issue_title:str, issue_body:str, created_at:str, username:str) -> dict:
+def get_data_to_store(issue_title:str, issue_body:str, created_at:str, user_id:int) -> dict:
     split_data = issue_body.split("===###===@@@===")
     metadata = list(csv.DictReader(io.StringIO(split_data[0].strip())))
     citations = list(csv.DictReader(io.StringIO(split_data[1].strip())))
-    user_id = get_user_id(username)        
     return {
         "data": {
             "title": issue_title,
@@ -156,7 +155,8 @@ if __name__ == "__main__":
     for issue in issues:
         issue_number = str(issue["number"])
         username = issue["author"]["login"]
-        if not is_in_whitelist(username):
+        user_id = get_user_id(username)
+        if not is_in_whitelist(user_id):
             answer(False, "To make a deposit, please contact OpenCitations at <contact@opencitations.net> to register as a trusted user", issue_number)
         else:
             issue_title = issue["title"]
@@ -164,6 +164,6 @@ if __name__ == "__main__":
             created_at = issue["createdAt"]
             is_valid, message = validate(issue_title, issue_body)
             answer(is_valid, message, issue_number)
-            data_to_store.append(get_data_to_store(issue_title, issue_body, created_at, username))
+            data_to_store.append(get_data_to_store(issue_title, issue_body, created_at, user_id))
     if data_to_store:
         deposit_on_zenodo(data_to_store)

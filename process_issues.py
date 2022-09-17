@@ -158,11 +158,12 @@ if __name__ == "__main__":
         username = issue["author"]["login"]
         if not is_in_whitelist(username):
             answer(False, "To make a deposit, please contact OpenCitations at <contact@opencitations.net> to register as a trusted user", issue_number)
-        issue_title = issue["title"]
-        issue_body = issue["body"]
-        created_at = issue["createdAt"]
-        is_valid, message = validate(issue_title, issue_body)
-        answer(is_valid, message, issue_number)
-        data_to_store.append(get_data_to_store(issue_title, issue_body, created_at, username))
+        else:
+            issue_title = issue["title"]
+            issue_body = issue["body"]
+            created_at = issue["createdAt"]
+            is_valid, message = validate(issue_title, issue_body)
+            answer(is_valid, message, issue_number)
+            data_to_store.append(get_data_to_store(issue_title, issue_body, created_at, username))
     if data_to_store:
         deposit_on_zenodo(data_to_store)

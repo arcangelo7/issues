@@ -98,8 +98,8 @@ class Test_process_issues(unittest.TestCase):
         issue_title = "deposit localhost:330 doi:10.1007/s42835-022-01029-y"
         issue_body = VALID_BODY
         created_at = "2022-09-16T22:34:30Z"
-        username = "arcangelo7"
-        output = get_data_to_store(issue_title, issue_body, created_at, username)
+        user_id = 42008604
+        output = get_data_to_store(issue_title, issue_body, created_at, user_id)
         expected_output = {
             'data': {
                 'title': 'deposit localhost:330 doi:10.1007/s42835-022-01029-y', 

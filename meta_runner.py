@@ -15,6 +15,7 @@
 # SOFTWARE.
 
 
+from sys import platform
 from typing import List
 import csv
 import io
@@ -60,10 +61,12 @@ if __name__ == "__main__":
         ["gh", "issue", "list", "--state", "closed", "--label", "to be processed", "--json", "body,number", "--repo", "https://github.com/arcangelo7/issues"], 
         capture_output=True, text=True)
     issues = json.loads(output.stdout)
+    is_unix = platform in {"linux", "linux2", "darwin"}
+    call_python = "python3" if is_unix else "python"
     store_meta_input(issues)
     os.chdir("oc_meta/")
     subprocess.run(["poetry", "shell"])
-    meta_output = subprocess.run(["python", "-m", "oc_meta.run.meta_process", "-c", "../meta_config.yaml"], capture_output=True, text=True)
+    meta_output = subprocess.run([call_python, "-m", "oc_meta.run.meta_process", "-c", "../meta_config.yaml"], capture_output=True, text=True)
     update_labels(meta_output, issues)
     for f in os.listdir("../meta_input"):
         os.remove(os.path.join("..", "meta_input", f))

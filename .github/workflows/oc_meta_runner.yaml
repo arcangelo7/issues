@@ -9,8 +9,8 @@ jobs:
       - name: Run OC Meta
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
-              python3 meta_runner.py
+            python3 meta_runner.py
           elif [ "$RUNNER_OS" == "Windows" ]; then
-              python meta_runner.py
+            python meta_runner.py
           
 

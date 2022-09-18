@@ -7,9 +7,9 @@ jobs:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
       - name: Run OC Meta
-        if: ${{ runner.os == "Linux" }}    
+        if: ${{ runner.os == 'Linux' }}    
         run: python3 meta_runner.py
       - name: Run OC Meta
-        if: ${{ runner.os == "Windows" }}      
+        if: ${{ runner.os == 'Windows' }}      
         run: python meta_runner.py
 

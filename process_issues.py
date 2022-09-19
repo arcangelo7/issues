@@ -163,7 +163,8 @@ if __name__ == "__main__":
             created_at = issue["createdAt"]
             is_valid, message = validate(issue_title, issue_body)
             answer(is_valid, message, issue_number)
-            data_to_store.append(get_data_to_store(issue_title, issue_body, created_at, user_id))
+            if is_valid:
+                data_to_store.append(get_data_to_store(issue_title, issue_body, created_at, user_id))
     if data_to_store:
         deposit_on_zenodo(data_to_store)
         subprocess.run(["gh", "workflow", "run", "oc_meta_runner.yaml"])

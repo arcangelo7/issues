@@ -83,7 +83,7 @@ def get_user_id(username:str) -> str:
             # Sleep 5 seconds, then try again
             time.sleep(5)
 
-def get_data_to_store(issue_title:str, issue_body:str, created_at:str, user_id:int) -> dict:
+def get_data_to_store(issue_title:str, issue_body:str, created_at:str, had_primary_source:str, user_id:int) -> dict:
     split_data = issue_body.split("===###===@@@===")
     metadata = list(csv.DictReader(io.StringIO(split_data[0].strip())))
     citations = list(csv.DictReader(io.StringIO(split_data[1].strip())))
@@ -95,7 +95,8 @@ def get_data_to_store(issue_title:str, issue_body:str, created_at:str, user_id:i
         },
         "provenance": {
             "generatedAtTime": created_at,
-            "wasAttributedTo": user_id
+            "wasAttributedTo": user_id,
+            "hadPrimarySource": had_primary_source
         }
     }
 
@@ -147,7 +148,7 @@ def is_in_whitelist(username:int) -> bool:
 if __name__ == "__main__":
     output = subprocess.run(
         ["gh", "issue", "list", "--state", "open", "--label", "deposit", 
-        "--json", "title,body,number,author,createdAt"], 
+        "--json", "title,body,number,author,createdAt,url"], 
         capture_output=True, text=True)
     issues = json.loads(output.stdout)
     data_to_store = list()
@@ -161,9 +162,10 @@ if __name__ == "__main__":
             issue_title = issue["title"]
             issue_body = issue["body"]
             created_at = issue["createdAt"]
+            had_primary_source = issue["url"]
             is_valid, message = validate(issue_title, issue_body)
             answer(is_valid, message, issue_number)
-            data_to_store.append(get_data_to_store(issue_title, issue_body, created_at, user_id))
+            data_to_store.append(get_data_to_store(issue_title, issue_body, created_at, had_primary_source, user_id))
     if data_to_store:
         # deposit_on_zenodo(data_to_store)
         subprocess.run(["gh", "workflow", "run", "oc_meta_runner.yaml"])
